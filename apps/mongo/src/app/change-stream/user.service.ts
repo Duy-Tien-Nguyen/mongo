@@ -4,7 +4,7 @@ import { Model } from "mongoose";
 import { User, UserDocument } from "./schema/user.schema";
 import { faker } from '@faker-js/faker';
 import { Role } from "../lib/enum/Role.enum";
-import { CreateUserDto } from "./dto/CreateUser.dto";
+import { CreateUserDto, UpdateUserDto } from "./dto/CreateUser.dto";
 
 @Injectable()
 export class UserService {
@@ -48,6 +48,25 @@ export class UserService {
       }
 
       return await this.userModel.insertMany(fakeUsers);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    try {
+      const updatedUser = await this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true });
+      if (!updatedUser) throw new BadRequestException("User not found");
+      return updatedUser;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async deleteUser(id: string): Promise<{ message: string }> {
+    try {
+      const deletedUser = await this.userModel.findByIdAndDelete(id);
+      if (!deletedUser) throw new BadRequestException("User not found");
+      return { message: "User deleted successfully" };
     } catch (error) {
       throw new BadRequestException(error);
     }

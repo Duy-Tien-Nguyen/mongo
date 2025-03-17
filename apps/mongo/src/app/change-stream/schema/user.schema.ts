@@ -15,6 +15,9 @@ export class User {
   @Prop({ required: true })
   age: number;
 
+  @Prop({ required: true, default: 0, min: 0 })  
+  balance: number; 
+
   @Prop({ default: Role.USER, enum: Role, type: String })
   role: Role;
 }
